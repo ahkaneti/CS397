@@ -1,3 +1,7 @@
+import React, { useState, useEffect } from 'react';
+import 'rbx/index.css';
+import { Button, Container, Title } from 'rbx';
+
 const schedule = {
   "title": "CS Courses for 2018-2019",
   "courses": [
@@ -33,7 +37,7 @@ const terms = { F: 'Fall', W: 'Winter', S: 'Spring' };
 
 
 const Banner = ({ title }) => (
-  <h1 className="title">{title}</h1>
+  <Title>{title || '[loading...]'}</Title>
 );
 
 const getCourseTerm = course => (
@@ -56,15 +60,27 @@ const CourseList = ({ courses }) => (
   </div>
 );
 
-const App = () => (
-  <div className="container">
-    <Banner title={schedule.title} />
-    <CourseList courses={schedule.courses} />
-  </div>
-);
+const App = () => {
+  const [schedule, setSchedule] = useState({ title: '', courses: [] });
+  const url = 'https://courses.cs.northwestern.edu/394/data/cs-courses.php';
+
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      const response = await fetch(url);
+      if (!response.ok) throw response;
+      const json = await response.json();
+      setSchedule(json);
+    }
+    fetchSchedule();
+  }, [])
+
+  return (
+    <Container>
+      <Banner title={schedule.title} />
+      <CourseList courses={schedule.courses} />
+    </Container>
+  );
+};
 
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('container')
-);
+export default App;
