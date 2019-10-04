@@ -1,5 +1,3 @@
-import React from 'react';
-
 const schedule = {
   "title": "CS Courses for 2018-2019",
   "courses": [
@@ -19,6 +17,11 @@ const schedule = {
       "meets": "MWF 13:00-13:50"
     },
     {
+      "id": "W111",
+      "title": "Fundamentals of Computer Programming I",
+      "meets": "MWF 11:00-11:50"
+    },
+    {
       "id": "F211",
       "title": "Fundamentals of Computer Programming II",
       "meets": "TuTh 12:30-13:50"
@@ -26,11 +29,42 @@ const schedule = {
   ]
 };
 
+const terms = { F: 'Fall', W: 'Winter', S: 'Spring' };
+
+
+const Banner = ({ title }) => (
+  <h1 className="title">{title}</h1>
+);
+
+const getCourseTerm = course => (
+  terms[course.id.charAt(0)]
+);
+
+const getCourseNumber = course => (
+  course.id.slice(1, 4)
+)
+
+const Course = ({ course }) => (
+  <button className="button">
+    {getCourseTerm(course)} CS {getCourseNumber(course)}: {course.title}
+  </button>
+);
+
+const CourseList = ({ courses }) => (
+  <div className="buttons">
+    {courses.map(course => <Course key={course.id} course={course} />)}
+  </div>
+);
+
 const App = () => (
-  <div>
+  <div className="container">
     <Banner title={schedule.title} />
     <CourseList courses={schedule.courses} />
   </div>
 );
 
-export default App;
+
+ReactDOM.render(
+  <App />,
+  document.getElementById('container')
+);
